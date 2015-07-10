@@ -1,0 +1,15 @@
+{
+  "name": "ae_neue_struktur",
+  "version": "1.0.0",
+  "description": "Struktur von artendb ergänzen. Ziel: Taxonomien verwalten. Hierarchien vereinheitlichen",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^3.10.0",
+    "nano": "^6.1.4"
+  }
+}
