@@ -16,6 +16,8 @@ var nano = require('nano')(url)
 var adb = nano.db.use('artendb')
 var _ = require('lodash')
 
+var docsWritten = 0
+
 function bulkSave (docs) {
   var bulk = {}
   bulk.docs = docs
@@ -23,12 +25,14 @@ function bulkSave (docs) {
     if (error) {
       console.log('error after bulk:', error)
     } else {
-      console.log(docs.length + ' Objekte aktualisiert. Result from bulk:', result)
+      docsWritten = docsWritten + 100
+      console.log('docsWritten', docsWritten)
+      console.log('result[0]:', result[0])
     }
   })
 }
 
-adb.view('artendb', 'objekte', {
+adb.view('artendb', 'prov_tax_ohne_gruppe', {
   'include_docs': true
 }, function (err, body) {
   if (!err) {
@@ -38,6 +42,7 @@ adb.view('artendb', 'objekte', {
     })
 
     var docs = []
+    var docsPrepared = 0
 
     _.forEach(docsArray, function (doc) {
       if (doc.Gruppe && doc.Taxonomie && doc.Taxonomien) {
@@ -72,14 +77,11 @@ adb.view('artendb', 'objekte', {
               doc.Eigenschaftensammlungen = neueEs
               doc.Beziehungssammlungen = neueBS
 
-              /*adb.insert(doc, function (error, result) {
-                if (error) console.log('error writing doc' + doc._id + ':', error)
-              })*/
-
               docs.push(doc)
               if (docs.length > 100) {
-                bulkSave(docs)
-                docs = []
+                bulkSave(docs.splice(0, 100))
+                docsPrepared = docsPrepared + 100
+                console.log('docsPrepared', docsPrepared)
               }
             }
           } else {
@@ -92,19 +94,6 @@ adb.view('artendb', 'objekte', {
         console.log('doc ' + doc._id + ' has no Gruppe or no Taxonomie')
       }
     })
-
-  // bulk-Format aufbauen
-  /*var bulk = {}
-  bulk.docs = docs
-
-  // alle Updates in einem mal durchführen
-  adb.bulk(bulk, function (error, result) {
-    if (error) {
-      console.log('error after bulk:', error)
-    } else {
-      console.log(docs.length + ' Objekte aktualisiert. Result from bulk:', result)
-    }
-  })*/
   } else {
     console.log('err: ', err)
   }
