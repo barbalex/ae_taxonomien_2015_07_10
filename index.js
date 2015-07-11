@@ -78,9 +78,9 @@ adb.view('artendb', 'prov_tax_ohne_gruppe', {
               doc.Beziehungssammlungen = neueBS
 
               docs.push(doc)
-              if (docs.length > 100) {
-                bulkSave(docs.splice(0, 100))
-                docsPrepared = docsPrepared + 100
+              if (docs.length > 600) {
+                bulkSave(docs.splice(0, 600))
+                docsPrepared = docsPrepared + 600
                 console.log('docsPrepared', docsPrepared)
               }
             }
